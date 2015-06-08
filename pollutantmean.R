@@ -46,7 +46,8 @@ pollutantmean <- function(directory = "specdata", pollutant, id = 1){
         # ecluding 'NA'  
         pollutantvalues <- function( dummy_variable ){
                 filenames <- namestrings(id) # requested filenames
-                values <- c() # stores pollutant values
+                values <- c(0) # stores pollutant values
+                amount <- c(0)
                 # define which column is needed
                 prep <- read.csv(filenames[1], nrows = 2)
                 columns <- colnames(prep) 
@@ -58,14 +59,15 @@ pollutantmean <- function(directory = "specdata", pollutant, id = 1){
                         # exclude 'NA' values from data
                         mydata <- mydata[!is.na(mydata)]
                         # collect data to final vector 'values'
-                        values <- c(values,mydata)
+                        values <- values + sum(mydata)
+                        amount <- amount + length(mydata)
                 }
                 remove(filenames, prep, columns, select, mydata)
-                values
+                c(values,amount)
         }
         cleandata <- pollutantvalues()
         print(paste(c("Mean value for ", pollutant, " accross file ids ", 
                 as.character(min(id)), ":" , as.character(max(id)),  
                         " is computed!!!"), collapse = ""))
-        mean(cleandata)
+        cleandata[1]/cleandata[2]
 }
