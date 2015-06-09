@@ -26,16 +26,16 @@ pollutantmean <- function(directory = "specdata", pollutant, id = 1){
                 names <- vector( length(id), mode = "character" )
                 for(i in 1:length(id)){
                         if(id[i]<10){
-                                names[i] <- paste( c( as.character( c(directory, 
-                                      "/",0, 0,id[i], ".csv"))), collapse = "") 
+                                names[i] <- paste( directory, "/", 0, 0, id[i], 
+                                           ".csv", sep = "", collapse = "")
                         }
                         else if(id[i]>9 & id[i]<100){
-                                names[i] <- paste( c( as.character( c(directory, 
-                                       "/", 0, id[i], ".csv"))), collapse = "")         
+                                names[i] <- paste( directory, "/", 0, id[i], 
+                                           ".csv", sep = "", collapse = "")        
                         } 
                         else{
-                                names[i] <- paste( c( as.character( c(directory,
-                                        "/", id[i], ".csv"))), collapse = "")
+                                names[i] <- paste( directory, "/", id[i], 
+                                        ".csv", sep = "", collapse = "")
                         }
                 }
                 names
@@ -46,8 +46,8 @@ pollutantmean <- function(directory = "specdata", pollutant, id = 1){
         # ecluding 'NA'  
         pollutantvalues <- function( dummy_variable ){
                 filenames <- namestrings(id) # requested filenames
-                values <- c(0) # stores pollutant values
-                amount <- c(0)
+                values <- c(0) # stores the sum of pollutant values
+                amount <- c(0) # stores number of summed observations 
                 # define which column is needed
                 prep <- read.csv(filenames[1], nrows = 2)
                 columns <- colnames(prep) 
@@ -63,7 +63,7 @@ pollutantmean <- function(directory = "specdata", pollutant, id = 1){
                         amount <- amount + length(mydata)
                 }
                 remove(filenames, prep, columns, select, mydata)
-                c(values,amount)
+                c(values,amount) #this gives the required mean value
         }
         cleandata <- pollutantvalues()
         print(paste(c("Mean value for ", pollutant, " accross file ids ", 
