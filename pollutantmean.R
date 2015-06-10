@@ -67,9 +67,8 @@ pollutantmean <- function(directory = "specdata", pollutant, id = 1:10){
                 c(values,amount) #this gives the required mean value
         }
         cleandata <- pollutantvalues()
-        print(paste(c("Mean value for ", pollutant, " accross file ids ", 
-                as.character(min(id)), ":" , as.character(max(id)),  
-                        " is computed!!!"), collapse = ""))
+        print(paste("Mean value for ", pollutant, " accross file ids ", 
+                    min(id), ":" , max(id), " is computed!!!", sep =""))
         # set the working directory to back to the main directory
         setwd("..")
         cleandata[1]/cleandata[2]
