@@ -17,9 +17,9 @@ corr <- function(directory , threshold = 0){
         myids <- output$id[output$nobs > threshold]
         
         # if there ARE NO files with 'nobs' > than 'threshold'
-        # assign 0 to required output 'correlation'
+        # assign empty vector to required output 'correlation'
         if(length(myids) == 0){
-                correlation <- c(0)
+                correlation <- c()
         }
         # if there ARE files with 'nobs' > than 'threshold'
         # compute correlations between "sulfate" and "nitrate"
@@ -43,7 +43,7 @@ corr <- function(directory , threshold = 0){
                         correlation <- c(correlation, correl)
                 }
         }
-        remove(filenames, select, mydata, correl, ouput, myids)
+        #remove(filenames, select, mydata, correl, output, myids)
         # set the working directory to back to the main directory
         if(directory != "."){
                 setwd("..")                

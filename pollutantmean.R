@@ -3,7 +3,7 @@
 # Part 1: pollutantmean.R
 # Prepared by Daulet Moldabayev 
 
-pollutantmean <- function(directory , pollutant, id = 1:10){
+pollutantmean <- function(directory , pollutant, id = 1:332){
         # set the working directory to the 'directory'
         setwd(directory)
         
