@@ -1,7 +1,9 @@
+# Coursera "R programming" course (June 1 - June 29, 2015)
 # Programming Assignment 1: Air Pollution
+# Part 2: complete.R
 # Prepared by Daulet Moldabayev 
 
-complete <- function(directory = "specdata", id = 1:10){
+complete <- function(directory , id = 1:10){
         # set the working directory to the 'directory' temporarily
         setwd(directory)     
         
@@ -18,29 +20,11 @@ complete <- function(directory = "specdata", id = 1:10){
                 break
         }
         
-        # a handy function to construct filenames from 'id' values
-        namestrings <- function(id){
-                names <- vector( length(id), mode = "character" )
-                for(i in 1:length(id)){
-                        if(id[i]<10){
-                                names[i] <- paste( 0, 0, id[i], 
-                                                   ".csv", sep = "")
-                        }
-                        else if(id[i]>9 & id[i]<100){
-                                names[i] <- paste( 0, id[i], ".csv", sep = "")        
-                        } 
-                        else{
-                                names[i] <- paste( id[i], ".csv", sep = "")
-                        }
-                }
-                names
-        }
+        # take file-names that are required
+        filenames <-  list.files(pattern = "*.csv", full.names = T)
+        filenames <- filenames[id]
         
-        # function to gather values of 'pollutant' accross files with given 'id'
-        # ecluding 'NA'  
-        
-        filenames <- namestrings(id) # requested filenames
-        # output data frame with columns 'id' and 'nobs' as integers
+       # output data frame with columns 'id' and 'nobs' as integers
         output <- data.frame(id = integer(0), nobs = integer(0)) 
         
         # a handy function for appending new rows to the data frame 'output'
@@ -58,15 +42,9 @@ complete <- function(directory = "specdata", id = 1:10){
                 # read the needed columns -- saves memory
                 mydata <- read.csv(name, colClasses = selectpollutants)
                 # compute rows without 'NA' values from data
-                amount <- c(0)
-                for(i in 1:length(mydata[[1]])){
-                        
-                        if(!is.na(mydata[[1]][i]) && !is.na(mydata[[2]][i])){
-                                amount <- amount + 1
-                        }
-                }
+                mydata <- na.omit(mydata)
                 # collect amount of observations to final vector 'amount'
-                amount <- as.integer(amount)
+                amount <- as.integer(length(mydata[[1]]))
                 # read the ID number
                 idcolumn <- read.csv(name, nrows = 2, colClasses = selectid)
                 idnumber <- idcolumn$ID[1]
@@ -75,10 +53,13 @@ complete <- function(directory = "specdata", id = 1:10){
                 rm(mydata, idcolumn, amount, idnumber)
         }
         remove(filenames, selectpollutants, selectid )
-        print(paste("The number of observations accross file ids ", 
-                        min(id), ":" , max(id), " is computed!!!", sep =""))
+        # print(paste("The number of complete observations accross file ids ", 
+        #               min(id), ":" , max(id), " is computed!!!", sep =""))
         
         # set the working directory to back to the main directory
-        setwd("..")
+        if(directory != "."){
+                setwd("..")                
+        }
+
         output
 }

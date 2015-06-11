@@ -1,7 +1,9 @@
+# Coursera "R programming" course (June 1 - June 29, 2015)
 # Programming Assignment 1: Air Pollution
+# Part 1: pollutantmean.R
 # Prepared by Daulet Moldabayev 
 
-pollutantmean <- function(directory = "specdata", pollutant, id = 1:10){
+pollutantmean <- function(directory , pollutant, id = 1:10){
         # set the working directory to the 'directory'
         setwd(directory)
         
@@ -24,52 +26,36 @@ pollutantmean <- function(directory = "specdata", pollutant, id = 1:10){
                 break
         }
         
-        # make a handy function to construct filenames from 'id' values
-        namestrings <- function(id){
-                names <- vector( length(id), mode = "character" )
-                for(i in 1:length(id)){
-                        if(id[i]<10){
-                                names[i] <- paste( 0, 0, id[i], 
-                                                        ".csv", sep = "")
-                        }
-                        else if(id[i]>9 & id[i]<100){
-                                names[i] <- paste( 0, id[i], ".csv", sep = "")        
-                        } 
-                        else{
-                                names[i] <- paste( id[i], ".csv", sep = "")
-                        }
-                }
-                names
-        }
-        
-        
         # function to gather values of 'pollutant' accross files with given 'id'
-        # ecluding 'NA'  
-        pollutantvalues <- function( dummy_variable ){
-                filenames <- namestrings(id) # requested filenames
-                values <- c(0) # stores the sum of pollutant values
-                amount <- c(0) # stores number of summed observations 
-                # define which column is needed
-                prep <- read.csv(filenames[1], nrows = 2)
-                columns <- colnames(prep) 
-                select <- rep("NULL", length(columns))
-                select[ columns == pollutant ] <- NA
-                for(name in filenames){ # loop through requested filenames
-                        # read the needed column -- saves memory
-                        mydata <- read.csv(name, colClasses = select)
-                        # exclude 'NA' values from data
-                        mydata <- mydata[!is.na(mydata)]
-                        # collect data to final vector 'values'
-                        values <- values + sum(mydata)
-                        amount <- amount + length(mydata)
-                }
-                remove(filenames, prep, columns, select, mydata)
-                c(values,amount) #this gives the required mean value
+        # excluding 'NA'  
+   
+        # take file-names that are required
+        filenames <-  list.files(pattern = "*.csv", full.names = T)
+        filenames <- filenames[id]
+        
+        values <- c(0) # stores the sum of pollutant values
+        amount <- c(0) # stores number of summed observations 
+        # define which column is needed
+        prep <- read.csv(filenames[1], nrows = 2)
+        columns <- colnames(prep) 
+        select <- rep("NULL", length(columns))
+        select[ columns == pollutant ] <- NA
+        for(name in filenames){ # loop through requested filenames
+                # read the needed column -- saves memory
+                mydata <- read.csv(name, colClasses = select)
+                # exclude 'NA' values from data
+                mydata <- na.omit(mydata)
+                # collect data to final vector 'values'
+                values <- values + sum(mydata[[1]])
+                amount <- amount + length(mydata[[1]])
         }
-        cleandata <- pollutantvalues()
-        print(paste("Mean value for ", pollutant, " accross file ids ", 
-                    min(id), ":" , max(id), " is computed!!!", sep =""))
+        remove(filenames, prep, columns, select, mydata)
+
+        # print(paste("Mean value for ", pollutant, " accross file ids ", 
+        #            min(id), ":" , max(id), " is computed!!!", sep =""))
         # set the working directory to back to the main directory
-        setwd("..")
-        cleandata[1]/cleandata[2]
+        if(directory != "."){
+                setwd("..")                
+        }
+        values/amount
 }
